@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-from django.contrib.auth.models import User
-
 from apps.issues.models import Issue, IssueActivity, IssuePriority, IssueStatus
+from django.contrib.auth.models import User
 
 
 class IssueService:

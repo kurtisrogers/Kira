@@ -1,8 +1,7 @@
-from django.db import models
-
 from apps.core.models import TimeStampedModel
 from apps.issues.models import IssueStatus
 from apps.projects.models import Project
+from django.db import models
 
 
 class Board(TimeStampedModel):

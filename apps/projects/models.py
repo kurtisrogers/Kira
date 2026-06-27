@@ -1,8 +1,7 @@
+from apps.core.models import TimeStampedModel
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
-
-from apps.core.models import TimeStampedModel
 
 
 class ProjectRole(models.TextChoices):
@@ -28,10 +27,6 @@ class Project(TimeStampedModel):
 
     def get_absolute_url(self):
         return reverse("projects:detail", kwargs={"key": self.key})
-
-    @property
-    def issue_count(self):
-        return self.issues.count()
 
 
 class ProjectMembership(TimeStampedModel):

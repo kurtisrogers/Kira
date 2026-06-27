@@ -1,13 +1,10 @@
+from apps.projects.models import Project, ProjectMembership, ProjectRole
 from django import forms
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
 from django.db.models import Count, Q
-from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
-
-from apps.projects.models import Project, ProjectMembership, ProjectRole
 
 
 class ProjectForm(forms.ModelForm):
@@ -61,8 +58,7 @@ class DashboardView(LoginRequiredMixin, ListView):
         )
         ctx["recent_issues"] = (
             Issue.objects.filter(
-                Q(project__memberships__user=self.request.user)
-                | Q(project__lead=self.request.user)
+                Q(project__memberships__user=self.request.user) | Q(project__lead=self.request.user)
             )
             .select_related("project", "status", "priority", "assignee")
             .distinct()

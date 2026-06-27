@@ -64,6 +64,16 @@ apps/
   projects/   # Projects & membership
 ```
 
+## Development
+
+```bash
+pip install -r requirements-dev.txt
+pre-commit install
+python -m pytest
+```
+
+Pre-commit runs Ruff (lint + format), `django check`, and the test suite on each commit. CI mirrors these checks on pull requests.
+
 ## License
 
 MIT

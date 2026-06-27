@@ -1,16 +1,15 @@
-from django.contrib.auth.models import User
+from apps.issues.models import Comment, Issue, IssueActivity, IssuePriority, IssueStatus, IssueType
+from apps.issues.services import IssueService
+from apps.projects.models import Project
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.db import models
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views import View
 from django.views.generic import CreateView, DetailView, UpdateView
-
-from apps.issues.models import Comment, Issue, IssueActivity, IssuePriority, IssueStatus, IssueType
-from apps.issues.services import IssueService
-from apps.projects.models import Project
 
 
 class IssueForm(forms.ModelForm):
@@ -66,9 +65,7 @@ class IssueCreateView(LoginRequiredMixin, CreateView):
         form.instance.project = self.project
         form.instance.reporter = self.request.user
         response = super().form_valid(form)
-        IssueService.log_activity(
-            self.object, self.request.user, IssueActivity.Action.CREATED
-        )
+        IssueService.log_activity(self.object, self.request.user, IssueActivity.Action.CREATED)
         return response
 
     def get_success_url(self):
@@ -88,7 +85,11 @@ class IssueDetailView(LoginRequiredMixin, DetailView):
         return get_object_or_404(
             Issue.objects.select_related(
                 "project", "status", "priority", "issue_type", "assignee", "reporter", "sprint"
-            ).prefetch_related("comments__author", "comments__author__profile", "activities__actor"),
+            ).prefetch_related(
+                "comments__author",
+                "comments__author__profile",
+                "activities__actor",
+            ),
             project__key=project_key,
             number=int(number),
         )
@@ -139,9 +140,7 @@ class AddCommentView(LoginRequiredMixin, View):
             comment.issue = issue
             comment.author = request.user
             comment.save()
-            IssueService.log_activity(
-                issue, request.user, IssueActivity.Action.COMMENTED
-            )
+            IssueService.log_activity(issue, request.user, IssueActivity.Action.COMMENTED)
             if request.htmx:
                 return render(
                     request,
@@ -168,10 +167,15 @@ class IssueInlineUpdateView(LoginRequiredMixin, View):
         IssueService.update_field(issue, field, value, request.user)
         new_value = IssueService.get_field_display(issue, field)
 
+        action = (
+            IssueActivity.Action.STATUS_CHANGED
+            if field == "status"
+            else IssueActivity.Action.UPDATED
+        )
         IssueService.log_activity(
             issue,
             request.user,
-            IssueActivity.Action.STATUS_CHANGED if field == "status" else IssueActivity.Action.UPDATED,
+            action,
             field_name=field,
             old_value=old_value,
             new_value=new_value,
@@ -208,7 +212,9 @@ class IssueListPartialView(LoginRequiredMixin, View):
 
         q = request.GET.get("q", "").strip()
         if q:
-            issues = issues.filter(models.Q(summary__icontains=q) | models.Q(description__icontains=q))
+            issues = issues.filter(
+                models.Q(summary__icontains=q) | models.Q(description__icontains=q)
+            )
 
         return render(
             request,
