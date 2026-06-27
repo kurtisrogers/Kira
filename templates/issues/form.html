@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}New issue — {{ project.key }}{% endblock %}
+
+{% block content %}
+<article style="max-width: 36rem;">
+  <header>
+    <h1>New issue</h1>
+    <p class="kira-muted">{{ project.key }} — {{ project.name }}</p>
+  </header>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create</button>
+    <a href="{{ project.get_absolute_url }}" role="button" class="secondary">Cancel</a>
+  </form>
+</article>
+{% endblock %}

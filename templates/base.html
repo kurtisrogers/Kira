@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Kira{% endblock %}</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  <link rel="stylesheet" href="{% static 'css/kira.css' %}">
+  <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.14.8/dist/cdn.min.js"></script>
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <script>
+    document.body.addEventListener("htmx:configRequest", (e) => {
+      const token = document.querySelector('meta[name="csrf-token"]');
+      if (token) e.detail.headers["X-CSRFToken"] = token.content;
+    });
+  </script>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+<div class="kira-layout">
+  <nav class="kira-nav">
+    <p><strong>Kira</strong></p>
+    {% for item in kira_nav_items %}
+      <a href="{% url item.url_name %}"
+         {% if request.resolver_match.view_name == item.url_name %}aria-current="page"{% endif %}>
+        {{ item.label }}
+      </a>
+    {% endfor %}
+    <hr>
+    <a href="{% url 'boards:list' %}">Boards</a>
+    <a href="{% url 'accounts:logout' %}">Log out</a>
+  </nav>
+  <main class="kira-main">
+    {% if messages %}
+      {% for message in messages %}
+        <article>{{ message }}</article>
+      {% endfor %}
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+</body>
+</html>

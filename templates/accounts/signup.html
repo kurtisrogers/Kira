@@ -1,0 +1,15 @@
+{% extends "base_auth.html" %}
+
+{% block title %}Sign up — Kira{% endblock %}
+
+{% block content %}
+<article>
+  <header><h1>Sign up</h1></header>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create account</button>
+  </form>
+  <p class="kira-muted">Already have an account? <a href="{% url 'accounts:login' %}">Log in</a></p>
+</article>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}{{ board.name }} — Kira{% endblock %}
+
+{% block content %}
+<div class="kira-header">
+  <div>
+    <h1>{{ board.name }}</h1>
+    <p class="kira-muted">
+      <a href="{{ board.project.get_absolute_url }}">{{ board.project.key }}</a>
+    </p>
+  </div>
+</div>
+
+<div class="kira-board">
+  {% for col in columns %}
+  <div class="kira-column">
+    <h4>{{ col.status.name }} <span class="kira-muted">({{ col.issues|length }})</span></h4>
+    {% for issue in col.issues %}
+      {% include "boards/partials/card.html" with columns=all_columns %}
+    {% empty %}
+      <p class="kira-muted" style="font-size: 0.8rem;">Empty</p>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

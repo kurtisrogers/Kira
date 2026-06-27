@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}{{ issue.key }} — Kira{% endblock %}
+
+{% block content %}
+<div class="kira-header">
+  <div>
+    <h1>{{ issue.key }}</h1>
+    <p>{{ issue.summary }}</p>
+  </div>
+  <a href="{% url 'issues:edit' key=issue.key %}" role="button" class="outline">Edit</a>
+</div>
+
+<div class="kira-issue-grid">
+  <section>
+    <h2>Description</h2>
+    {% if issue.description %}
+      <p>{{ issue.description|linebreaksbr }}</p>
+    {% else %}
+      <p class="kira-muted">No description.</p>
+    {% endif %}
+
+    {% if subtasks %}
+    <h3>Subtasks</h3>
+    <ul>
+      {% for sub in subtasks %}
+      <li><a href="{{ sub.get_absolute_url }}">{{ sub.key }}</a> — {{ sub.summary }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    <h3>Activity</h3>
+    <ul>
+      {% for act in issue.activities.all|slice:":10" %}
+      <li class="kira-muted">
+        {{ act.actor.username|default:"System" }} — {{ act.get_action_display }}
+        {% if act.field_name %}: {{ act.old_value }} → {{ act.new_value }}{% endif %}
+        · {{ act.created_at|timesince }} ago
+      </li>
+      {% empty %}
+      <li class="kira-muted">No activity yet.</li>
+      {% endfor %}
+    </ul>
+
+    <h3>Comments</h3>
+    <div id="comments">
+      {% for comment in issue.comments.all %}
+        {% include "issues/partials/comment.html" %}
+      {% endfor %}
+    </div>
+
+    <form hx-post="{% url 'issues:comment' key=issue.key %}"
+          hx-target="#comments" hx-swap="beforeend"
+          hx-on::after-request="if(event.detail.successful) this.reset()">
+      {% csrf_token %}
+      {{ comment_form.body }}
+      <button type="submit">Comment</button>
+    </form>
+  </section>
+
+  <aside>
+    <label>Status
+      <select name="value"
+              hx-post="{% url 'issues:inline_update' key=issue.key %}"
+              hx-vals='{"field": "status"}'
+              hx-swap="none">
+        {% for s in statuses %}
+        <option value="{{ s.pk }}" {% if s.pk == issue.status_id %}selected{% endif %}>{{ s.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>Priority
+      <select name="value"
+              hx-post="{% url 'issues:inline_update' key=issue.key %}"
+              hx-vals='{"field": "priority"}'
+              hx-swap="none">
+        {% for p in priorities %}
+        <option value="{{ p.pk }}" {% if p.pk == issue.priority_id %}selected{% endif %}>{{ p.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <p>Assignee<br>
+      {% if issue.assignee %}
+        <span class="kira-avatar" style="background: {{ issue.assignee.profile.avatar_color }}">
+          {{ issue.assignee.profile.initials }}
+        </span>
+        {{ issue.assignee.username }}
+      {% else %}
+        <span class="kira-muted">Unassigned</span>
+      {% endif %}
+    </p>
+
+    <p>Type<br><span class="kira-badge">{{ issue.issue_type.name }}</span></p>
+    <p>Reporter<br>{{ issue.reporter.username }}</p>
+    {% if issue.story_points %}<p>Points<br>{{ issue.story_points }}</p>{% endif %}
+    {% if issue.due_date %}<p>Due<br>{{ issue.due_date }}</p>{% endif %}
+
+    <p><a href="{{ issue.project.get_absolute_url }}">← {{ issue.project.key }}</a></p>
+  </aside>
+</div>
+{% endblock %}

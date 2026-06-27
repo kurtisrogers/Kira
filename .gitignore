@@ -1,0 +1,12 @@
+# Kira
+
+*.py[cod]
+__pycache__/
+*.sqlite3
+.venv/
+venv/
+.env
+staticfiles/
+*.egg-info/
+dist/
+build/

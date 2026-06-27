@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}{% if object %}Edit{% else %}New{% endif %} project — Kira{% endblock %}
+
+{% block content %}
+<article style="max-width: 32rem;">
+  <header><h1>{% if object %}Edit {{ object.key }}{% else %}New project{% endif %}</h1></header>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+    {% if object %}
+      <a href="{{ object.get_absolute_url }}" role="button" class="secondary">Cancel</a>
+    {% endif %}
+  </form>
+</article>
+{% endblock %}
