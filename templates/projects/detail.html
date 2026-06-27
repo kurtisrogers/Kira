@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.key }} — Kira{% endblock %}
+
+{% block content %}
+<div class="kira-header">
+  <div>
+    <h1>{{ project.key }}</h1>
+    <p class="kira-muted">{{ project.name }}</p>
+  </div>
+  <div>
+    <a href="{% url 'boards:project_board' project_key=project.key %}" role="button" class="outline">Board</a>
+    <a href="{% url 'issues:create' project_key=project.key %}" role="button">New issue</a>
+  </div>
+</div>
+
+{% if project.description %}
+<p>{{ project.description }}</p>
+{% endif %}
+
+<div x-data="{ q: '', status: '' }">
+  <div class="grid" style="grid-template-columns: 1fr auto auto; gap: 0.5rem; align-items: end;">
+    <label>
+      Search
+      <input type="search" x-model="q" name="q" placeholder="Filter issues…"
+             hx-get="{% url 'issues:list_partial' project_key=project.key %}"
+             hx-trigger="input changed delay:300ms"
+             hx-target="#issue-list"
+             hx-include="[name='status']">
+    </label>
+    <label>
+      Status
+      <select name="status" x-model="status"
+              hx-get="{% url 'issues:list_partial' project_key=project.key %}"
+              hx-trigger="change"
+              hx-target="#issue-list"
+              hx-include="[name='q']">
+        <option value="">All</option>
+        {% for s in statuses %}
+        <option value="{{ s.pk }}">{{ s.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+  </div>
+
+  <div id="issue-list" class="kira-muted" style="margin-top: 1rem;">
+    {% include "issues/partials/issue_list.html" %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Projects — Kira{% endblock %}
+
+{% block content %}
+<div class="kira-header">
+  <h1>Projects</h1>
+  <a href="{% url 'projects:create' %}" role="button">New project</a>
+</div>
+
+{% if projects %}
+<table>
+  <thead>
+    <tr><th>Key</th><th>Name</th><th>Issues</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for project in projects %}
+    <tr>
+      <td><a href="{{ project.get_absolute_url }}">{{ project.key }}</a></td>
+      <td>{{ project.name }}</td>
+      <td>{{ project.issue_count }}</td>
+      <td><a href="{% url 'projects:edit' key=project.key %}">Edit</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="kira-muted">No projects yet.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,7 @@
+<div id="comment-{{ comment.pk }}">
+  <p>
+    <strong>{{ comment.author.username }}</strong>
+    <span class="kira-muted">{{ comment.created_at|timesince }} ago</span>
+  </p>
+  <p>{{ comment.body|linebreaksbr }}</p>
+</div>

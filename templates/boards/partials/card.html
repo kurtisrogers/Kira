@@ -1,0 +1,21 @@
+<div class="kira-card" id="issue-card-{{ issue.pk }}">
+  <div class="key">{{ issue.key }}</div>
+  <a href="{{ issue.get_absolute_url }}">{{ issue.summary }}</a>
+  <form hx-post="{% url 'boards:move' board_id=board.pk %}" hx-trigger="change" hx-swap="none">
+  <input type="hidden" name="issue_id" value="{{ issue.pk }}">
+  <select name="status_id" style="font-size: 0.7rem; margin-top: 0.25rem; padding: 0.1rem;">
+    {% for col in columns %}
+    <option value="{{ col.status.pk }}" {% if issue.status_id == col.status.pk %}selected{% endif %}>
+      {{ col.status.name }}
+    </option>
+    {% endfor %}
+  </select>
+  </form>
+  {% if issue.assignee %}
+  <div style="margin-top: 0.25rem;">
+    <span class="kira-avatar" style="background: {{ issue.assignee.profile.avatar_color }}">
+      {{ issue.assignee.profile.initials }}
+    </span>
+  </div>
+  {% endif %}
+</div>

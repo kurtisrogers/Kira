@@ -1,0 +1,125 @@
+/* Minimal Kira overrides on top of Pico */
+
+:root {
+  --kira-nav-width: 12rem;
+}
+
+body > .kira-layout {
+  display: grid;
+  grid-template-columns: var(--kira-nav-width) 1fr;
+  min-height: 100vh;
+}
+
+.kira-nav {
+  border-right: 1px solid var(--pico-muted-border-color);
+  padding: 1rem 0.75rem;
+}
+
+.kira-nav a {
+  display: block;
+  padding: 0.35rem 0.5rem;
+  text-decoration: none;
+  border-radius: var(--pico-border-radius);
+}
+
+.kira-nav a[aria-current="page"] {
+  background: var(--pico-primary-background);
+  color: var(--pico-primary-inverse);
+}
+
+.kira-main {
+  padding: 1rem 1.5rem 2rem;
+  max-width: 72rem;
+}
+
+.kira-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.kira-muted {
+  color: var(--pico-muted-color);
+  font-size: 0.875rem;
+}
+
+.kira-badge {
+  display: inline-block;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  background: var(--pico-muted-border-color);
+}
+
+.kira-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* Kanban */
+.kira-board {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.kira-column {
+  flex: 0 0 16rem;
+  background: var(--pico-card-background-color);
+  border: 1px solid var(--pico-muted-border-color);
+  border-radius: var(--pico-border-radius);
+  padding: 0.5rem;
+}
+
+.kira-column h4 {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+}
+
+.kira-card {
+  background: var(--pico-background-color);
+  border: 1px solid var(--pico-muted-border-color);
+  border-radius: var(--pico-border-radius);
+  padding: 0.5rem 0.6rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.875rem;
+}
+
+.kira-card a {
+  text-decoration: none;
+}
+
+.kira-card .key {
+  font-size: 0.7rem;
+  color: var(--pico-muted-color);
+}
+
+/* Issue detail grid */
+.kira-issue-grid {
+  display: grid;
+  grid-template-columns: 1fr 16rem;
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  body > .kira-layout {
+    grid-template-columns: 1fr;
+  }
+  .kira-nav {
+    border-right: none;
+    border-bottom: 1px solid var(--pico-muted-border-color);
+  }
+  .kira-issue-grid {
+    grid-template-columns: 1fr;
+  }
+}

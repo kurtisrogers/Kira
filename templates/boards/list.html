@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Boards — Kira{% endblock %}
+
+{% block content %}
+<h1>Boards</h1>
+{% if boards %}
+<table>
+  <thead><tr><th>Board</th><th>Project</th></tr></thead>
+  <tbody>
+    {% for board in boards %}
+    <tr>
+      <td><a href="{% url 'boards:detail' board_id=board.pk %}">{{ board.name }}</a></td>
+      <td><a href="{{ board.project.get_absolute_url }}">{{ board.project.key }}</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="kira-muted">No boards yet. Open a project and click Board.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — Kira{% endblock %}
+
+{% block content %}
+<div class="kira-header">
+  <h1>Dashboard</h1>
+  <a href="{% url 'projects:create' %}" role="button" class="outline">New project</a>
+</div>
+
+<section>
+  <h2>My issues</h2>
+  {% if my_issues %}
+    <table>
+      <thead>
+        <tr><th>Key</th><th>Summary</th><th>Status</th><th>Priority</th></tr>
+      </thead>
+      <tbody>
+        {% for issue in my_issues %}
+        <tr>
+          <td><a href="{{ issue.get_absolute_url }}">{{ issue.key }}</a></td>
+          <td>{{ issue.summary }}</td>
+          <td><span class="kira-badge">{{ issue.status.name }}</span></td>
+          <td>{{ issue.priority.name }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="kira-muted">No issues assigned to you.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>Projects</h2>
+  {% if projects %}
+    <div class="grid">
+      {% for project in projects %}
+      <article>
+        <header>
+          <a href="{{ project.get_absolute_url }}"><strong>{{ project.key }}</strong></a>
+        </header>
+        <p>{{ project.name }}</p>
+        <footer class="kira-muted">{{ project.issue_count }} issue{{ project.issue_count|pluralize }}</footer>
+      </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="kira-muted">Create your first project to get started.</p>
+  {% endif %}
+</section>
+{% endblock %}

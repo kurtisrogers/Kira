@@ -1,0 +1,18 @@
+<table>
+  <thead>
+    <tr><th>Key</th><th>Summary</th><th>Type</th><th>Status</th><th>Assignee</th></tr>
+  </thead>
+  <tbody>
+    {% for issue in issues %}
+    <tr>
+      <td><a href="{{ issue.get_absolute_url }}">{{ issue.key }}</a></td>
+      <td>{{ issue.summary }}</td>
+      <td>{{ issue.issue_type.name }}</td>
+      <td><span class="kira-badge">{{ issue.status.name }}</span></td>
+      <td>{% if issue.assignee %}{{ issue.assignee.username }}{% else %}—{% endif %}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5" class="kira-muted">No issues found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
