@@ -1,7 +1,3 @@
-from django import forms
-from django.contrib import admin
-from django.db.models import Count
-
 from apps.issues.models import (
     Comment,
     Issue,
@@ -11,6 +7,7 @@ from apps.issues.models import (
     IssueType,
     Sprint,
 )
+from django.contrib import admin
 
 
 @admin.register(IssueType)

@@ -1,6 +1,5 @@
-from django.conf import settings
-
 from apps.core.extensions import registry
+from django.conf import settings
 
 
 def kira_globals(request):

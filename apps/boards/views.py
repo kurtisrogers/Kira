@@ -1,14 +1,12 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db import models
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render
-from django.views import View
-from django.views.generic import DetailView, ListView
-
 from apps.boards.models import Board
 from apps.issues.models import Issue, IssueStatus
 from apps.issues.services import IssueService
 from apps.projects.models import Project
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect
+from django.views import View
+from django.views.generic import DetailView, ListView
 
 
 class BoardListView(LoginRequiredMixin, ListView):
@@ -17,9 +15,11 @@ class BoardListView(LoginRequiredMixin, ListView):
     context_object_name = "boards"
 
     def get_queryset(self):
-        return Board.objects.filter(
-            project__memberships__user=self.request.user
-        ).select_related("project").distinct()
+        return (
+            Board.objects.filter(project__memberships__user=self.request.user)
+            .select_related("project")
+            .distinct()
+        )
 
 
 class BoardDetailView(LoginRequiredMixin, DetailView):

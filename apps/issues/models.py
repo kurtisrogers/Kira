@@ -1,9 +1,8 @@
+from apps.core.models import TimeStampedModel
+from apps.projects.models import Project
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
-
-from apps.core.models import TimeStampedModel
-from apps.projects.models import Project
 
 
 class IssueType(TimeStampedModel):
@@ -119,7 +118,10 @@ class Issue(TimeStampedModel):
     def save(self, *args, **kwargs):
         if not self.number:
             last = (
-                Issue.objects.filter(project=self.project).order_by("-number").values_list("number", flat=True).first()
+                Issue.objects.filter(project=self.project)
+                .order_by("-number")
+                .values_list("number", flat=True)
+                .first()
             )
             self.number = (last or 0) + 1
         super().save(*args, **kwargs)

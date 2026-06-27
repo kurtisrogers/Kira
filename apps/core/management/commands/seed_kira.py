@@ -1,10 +1,9 @@
-from django.core.management.base import BaseCommand
-from django.contrib.auth.models import User
-
 from apps.accounts.models import Profile
 from apps.boards.models import Board
 from apps.issues.models import Issue, IssuePriority, IssueStatus, IssueType
 from apps.projects.models import Project, ProjectMembership, ProjectRole
+from django.contrib.auth.models import User
+from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
@@ -29,7 +28,7 @@ class Command(BaseCommand):
             demo.save()
         Profile.objects.get_or_create(user=demo, defaults={"display_name": "Demo User"})
 
-        for key, name, level in [
+        for _key, name, level in [
             ("highest", "Highest", 5),
             ("high", "High", 4),
             ("medium", "Medium", 3),
@@ -44,7 +43,9 @@ class Command(BaseCommand):
             ("story", "Story", "book", "#10B981"),
             ("epic", "Epic", "zap", "#8B5CF6"),
         ]:
-            IssueType.objects.get_or_create(key=key, defaults={"name": name, "icon": icon, "color": color})
+            IssueType.objects.get_or_create(
+                key=key, defaults={"name": name, "icon": icon, "color": color}
+            )
 
         for name, category, pos in [
             ("Backlog", "todo", 0),
@@ -103,4 +104,6 @@ class Command(BaseCommand):
                     description=f"Demo issue: {summary}",
                 )
 
-        self.stdout.write(self.style.SUCCESS("Seed data created. Login: admin / admin or demo / demo"))
+        self.stdout.write(
+            self.style.SUCCESS("Seed data created. Login: admin / admin or demo / demo")
+        )

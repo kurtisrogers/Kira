@@ -1,6 +1,5 @@
-from django.contrib import admin
-
 from apps.boards.models import Board, BoardColumn
+from django.contrib import admin
 
 
 class BoardColumnInline(admin.TabularInline):
